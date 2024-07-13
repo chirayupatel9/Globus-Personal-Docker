@@ -46,7 +46,7 @@ setup_key=$(echo "$endpoint_info" | grep -oP 'Setup Key: \K[0-9a-f-]+')
 export GLOBUS_ENDPOINT_ID="$endpoint_id"
 export GLOBUS_SETUP_KEY="$setup_key"
 
-cd /home/gridftp/globusconnectpersonal-**/
+cd /home/globus/globusconnectpersonal-**/
 ```
 
 ## Finish the Endpoint Setup
@@ -60,14 +60,14 @@ cd /home/gridftp/globusconnectpersonal-**/
 ```bash
 ./globusconnectpersonal -start &
 echo "$DataPath,0,1" >> ~/.globusonline/lta/config-paths
-cp -p -r /home/gridftp/.globus* $ConfigPath
+cp -p -r /home/globus/.globus* $ConfigPath
 ```
 
 ## Once the Setup is complete the endpoint can be started using the following command:
 
 ```bash
 DataPath=/home/ferroelectric/Documents/ &&
-ConfigPath=/home/ferroelectric/globus_config &&
+ConfigPath=/home/ferroelectric/Globus-Personal-Docker-1/config &&
 docker run -e DataPath="$DataPath"  \
            -e ConfigPath="$ConfigPath" \
            -e START_GLOBUS="true" \

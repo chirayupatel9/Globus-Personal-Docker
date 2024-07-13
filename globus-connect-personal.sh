@@ -19,22 +19,22 @@ gcpdir=$(find . -maxdepth 1 -type d -name "globusconnectpersonal-*" -print -quit
 
 ###  Script Start  ###
 
-cd /home/globus
+cd /home/gridftp
 
 # Check to make sure globusconnectpersonal exists
 if [ ! -d "$gcpdir" ]; then
     exit 1
 fi
 
-# Check /home/globus for existing GCP config
+# Check /home/gridftp for existing GCP config
 if [ -d "$gcpconfigdir" ]; then
     # GCP endpoint config exists, start the endpoint
     "./$gcpdir/globusconnectpersonal" -start
 else
     # Check /data/globus-save for GCP endpoint config
-    if [ -d "/home/ferroelectric/globus_config/$gcpconfigdir" ]; then
+    if [ -d "/home/gridftp/globus_config/$gcpconfigdir" ]; then
         # Copy existing config and then start GCP endpoint
-        cp -p -r /home/ferroelectric/globus_config/.glob* ~
+        cp -p -r /home/gridftp/globus_config/.glob* ~
         "./$gcpdir/globusconnectpersonal" -start
     else
         # Can't find GCP config, sleep for an hour to let user set up config

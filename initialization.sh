@@ -25,13 +25,16 @@ export GLOBUS_ENDPOINT_ID="$endpoint_id"
 export GLOBUS_SETUP_KEY="$setup_key"
 
 # Change to the Globus Connect Personal directory
-cd /home/globus/globusconnectpersonal-*/
+cd /home/gridftp/globusconnectpersonal-*/
 
 # Finish the Endpoint Setup
 ./globusconnectpersonal -setup $GLOBUS_SETUP_KEY
 
-# Add Path and Start the Endpoint
+# Copy the Globus configuration to the host directory
+cp -p -r /home/gridftp/.globus* /home/gridftp/globus_config
+
+./globusconnectpersonal -start &
 echo "$DataPath,0,1" >> ~/.globusonline/lta/config-paths
 
 # Copy the Globus configuration to the host directory
-cp -p -r /home/globus/.globus* /home/globus/globus_config
+cp -p -r /home/gridftp/.globus* /home/gridftp/globus_config

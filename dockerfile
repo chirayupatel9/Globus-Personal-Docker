@@ -9,8 +9,8 @@ FROM rockylinux:9
 LABEL MAINTAINER Nadya Williams <nwilliams@ucsd.edu>
 LABEL CONTRIBUTER Kyle Krick <kkrick@sdsu.edu>
 
-VOLUME /home/globus/globus_config
-VOLUME /home/globus/data 
+VOLUME /home/gridftp/globus_config
+VOLUME /home/gridftp/data 
 
 # Install necessary packages
 RUN yum -y update && \
@@ -19,29 +19,29 @@ RUN yum -y update && \
     yum -y update && \
     dnf -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm && \
     pip3 install --upgrade globus-cli && \
-    adduser globus
+    adduser gridftp
 
 RUN cd /root && \
     wget https://downloads.globus.org/globus-connect-personal/linux/stable/globusconnectpersonal-latest.tgz && \
-    tar xzvf /root/globusconnectpersonal-latest.tgz -C /home/globus && \
-    chown -R globus.globus /home/globus/globus*
+    tar xzvf /root/globusconnectpersonal-latest.tgz -C /home/gridftp && \
+    chown -R gridftp.gridftp /home/gridftp/globus*
 
 # Create directories and adjust permissions
-RUN mkdir -p /home/globus/globus_config/.globus && \
-    mkdir -p /home/globus/globus_config/.globusonline && \
-    mkdir -p /home/globus/data && \
-    chown -R globus:globus /home/globus/globus_config && \
-    chown -R globus:globus /home/globus/data && \
-    chmod -R 755 /home/globus/globus_config && \
-    chmod -R 755 /home/globus/data
+RUN mkdir -p /home/gridftp/globus_config/.globus && \
+    mkdir -p /home/gridftp/globus_config/.globusonline && \
+    mkdir -p /home/gridftp/data && \
+    chown -R gridftp:gridftp /home/gridftp/globus_config && \
+    chown -R gridftp:gridftp /home/gridftp/data && \
+    chmod -R 755 /home/gridftp/globus_config && \
+    chmod -R 755 /home/gridftp/data
 
 # Copy the script into the container
-COPY globus-connect-personal.sh /home/globus/globus-connect-personal.sh
-COPY initialization.sh /home/globus/initialization.sh
+COPY globus-connect-personal.sh /home/gridftp/globus-connect-personal.sh
+COPY initialization.sh /home/gridftp/initialization.sh
 COPY entrypoint.sh ./entrypoint.sh
 
 # Make the script executable
-RUN chmod +x /home/globus/initialization.sh ./entrypoint.sh /home/globus/globus-connect-personal.sh
+RUN chmod +x /home/gridftp/initialization.sh ./entrypoint.sh /home/gridftp/globus-connect-personal.sh
 
 # Use the entrypoint script
 ENTRYPOINT ["./entrypoint.sh"]
