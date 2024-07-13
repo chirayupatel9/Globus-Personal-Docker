@@ -26,6 +26,15 @@ RUN cd /root && \
     tar xzvf /root/globusconnectpersonal-latest.tgz -C /home/globus && \
     chown -R globus.globus /home/globus/globus*
 
+# Create directories and adjust permissions
+RUN mkdir -p /home/globus/globus_config/.globus && \
+    mkdir -p /home/globus/globus_config/.globusonline && \
+    mkdir -p /home/globus/data && \
+    chown -R globus:globus /home/globus/globus_config && \
+    chown -R globus:globus /home/globus/data && \
+    chmod -R 755 /home/globus/globus_config && \
+    chmod -R 755 /home/globus/data
+
 # Copy the script into the container
 COPY globus-connect-personal.sh /home/globus/globus-connect-personal.sh
 COPY initialization.sh /home/globus/initialization.sh

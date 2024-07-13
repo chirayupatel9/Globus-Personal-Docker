@@ -7,4 +7,4 @@ else
     su globus -c "cd /home/globus && source ./initialization.sh $DataPath $ConfigPath"
 fi
 
-/bin/bash -i
+echo setup complete
