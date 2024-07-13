@@ -6,10 +6,10 @@ if [ "$#" -ne 2 ]; then
     exit 1
 fi
 
-# Assign input arguments to variables
-DataPath=$1
-ConfigPath=$2
-    
+# # Assign input arguments to variables
+# DataPath=$1
+# ConfigPath=$2
+
 # Inside the container: Setup the Globus Personal Endpoint
 globus login --no-local-server
 
@@ -34,4 +34,4 @@ cd /home/globus/globusconnectpersonal-*/
 echo "$DataPath,0,1" >> ~/.globusonline/lta/config-paths
 
 # Copy the Globus configuration to the host directory
-cp -p -r /home/globus/.globus* /home/globus/configpath
+cp -p -r /home/globus/.globus* /home/globus/globus_config
