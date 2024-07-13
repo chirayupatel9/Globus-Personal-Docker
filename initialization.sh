@@ -9,17 +9,7 @@ fi
 # Assign input arguments to variables
 DataPath=$1
 ConfigPath=$2
-
-# Build the Docker image
-docker build -t globus .
-
-# Run the container with the necessary volumes and environment variables
-docker run -e DataPath=$DataPath \
-           -e ConfigPath=$ConfigPath \
-           -v $ConfigPath:/home/globus/configpath \
-           -v $DataPath:/home/globus/data \
-           -it globus /bin/bash -c
-           
+    
 # Inside the container: Setup the Globus Personal Endpoint
 globus login --no-local-server
 
