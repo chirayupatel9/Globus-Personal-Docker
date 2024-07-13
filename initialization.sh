@@ -16,8 +16,8 @@ docker build -t globus .
 # Run the container with the necessary volumes and environment variables
 docker run -e DataPath=$DataPath \
            -e ConfigPath=$ConfigPath \
-           -v $ConfigPath:$ConfigPath \
-           -v $DataPath:$DataPath \
+           -v $ConfigPath:/home/globus/configpath \
+           -v $DataPath:/home/globus/data \
            -it globus /bin/bash -c
            
 # Inside the container: Setup the Globus Personal Endpoint
@@ -41,8 +41,7 @@ cd /home/globus/globusconnectpersonal-*/
 ./globusconnectpersonal -setup $GLOBUS_SETUP_KEY
 
 # Add Path and Start the Endpoint
-./globusconnectpersonal -start &
 echo "$DataPath,0,1" >> ~/.globusonline/lta/config-paths
 
 # Copy the Globus configuration to the host directory
-cp -p -r /home/globus/.globus* $ConfigPath
+cp -p -r /home/globus/.globus* /home/globus/configpath
