@@ -1,11 +1,5 @@
 #!/bin/bash
 
-# Check if the correct number of arguments are provided
-if [ "$#" -ne 2 ]; then
-    echo "Usage: $0 <DataPath> <ConfigPath>"
-    exit 1
-fi
-
 # # Assign input arguments to variables
 # DataPath=$1
 # ConfigPath=$2
@@ -34,7 +28,7 @@ cd /home/gridftp/globusconnectpersonal-*/
 cp -p -r /home/gridftp/.globus* /home/gridftp/globus_config
 
 ./globusconnectpersonal -start &
-echo "$DataPath,0,1" >> ~/.globusonline/lta/config-paths
+echo "/home/gridftp/data,0,1" >> ~/.globusonline/lta/config-paths
 
 # Copy the Globus configuration to the host directory
 cp -p -r /home/gridftp/.globus* /home/gridftp/globus_config
