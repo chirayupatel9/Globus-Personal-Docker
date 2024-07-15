@@ -19,8 +19,8 @@ DataPath=/home/ferroelectric/Globus-Personal-Docker-1/data
 ConfigPath=/home/ferroelectric/Globus-Personal-Docker-1/config
 docker run -e DataPath=$DataPath \
            -e ConfigPath=$ConfigPath \
-           -v $ConfigPath:$ConfigPath \
-           -v $DataPath:$DataPath \
+           -v "$ConfigPath":/home/gridftp/globus_config \
+           -v "$DataPath":/home/gridftp/data \
            -it globus
 ```
 
@@ -71,7 +71,7 @@ ConfigPath=/home/ferroelectric/Globus-Personal-Docker-1/config &&
 docker run -e DataPath="$DataPath"  \
            -e ConfigPath="$ConfigPath" \
            -e START_GLOBUS="true" \
-           -v "$ConfigPath":"$ConfigPath" \
-           -v "$DataPath":"$DataPath" \
+           -v "$ConfigPath":/home/gridftp/globus_config \
+           -v "$DataPath":/home/gridftp/data \
            -it globus
 ```
