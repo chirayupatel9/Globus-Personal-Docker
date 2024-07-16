@@ -42,14 +42,15 @@ COPY entrypoint.sh ./entrypoint.sh
 
 # Make the script executable
 RUN chmod +x /home/gridftp/initialization.sh ./entrypoint.sh /home/gridftp/globus-connect-personal.sh
-
-# Use the entrypoint script
-ENTRYPOINT ["./entrypoint.sh"]
-
 # globus-connect-server-setup script needs these
 ENV HOME /root
 ENV TERM xterm
 
 # Set default value for RUN_SETUP_SCRIPT
 ENV START_GLOBUS=false
+
+# Use the entrypoint script
+ENTRYPOINT ["./entrypoint.sh"]
+
+
 
