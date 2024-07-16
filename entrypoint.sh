@@ -8,3 +8,6 @@ else
 fi
 
 echo setup complete
+
+# Keep the terminal open
+tail -f /dev/null
