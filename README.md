@@ -34,5 +34,6 @@ docker run -e DataPath="$DataPath"  \
            -e START_GLOBUS="true" \
            -v "$ConfigPath":/home/gridftp/globus_config \
            -v "$DataPath":/home/gridftp/data \
+           -- entrypoint /bin/bash \
            -it globus
 ```

@@ -1,0 +1,37 @@
+version: "3.3"
+
+services:
+  globus-connect:
+    build:
+      context: .
+      dockerfile: Dockerfile.globus-connect
+    container_name: globus_connect_container
+    environment:
+      - START_GLOBUS=true
+      - DataPath=${DataPath}
+      - ConfigPath=${ConfigPath}
+    volumes:
+      - ${ConfigPath}:/home/gridftp/globus_config
+      - ${DataPath}:/home/gridftp/data
+    networks:
+      - app-network
+    ports:
+      - "2811:2811"
+      - "7512:7512"
+      - "7513:7513"
+    restart: unless-stopped
+
+  python-fetch:
+    build:
+      context: .
+      dockerfile: Dockerfile.datafed
+    container_name: python_fetch_container
+    environment:
+      - ENDPOINT_URL=http://globus_connect_container:7512/endpoint
+    networks:
+      - app-network
+    restart: unless-stopped
+
+networks:
+  app-network:
+    driver: bridge
