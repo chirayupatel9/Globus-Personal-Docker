@@ -7,9 +7,9 @@ services:
       dockerfile: Dockerfile.globus-connect
     container_name: globus_connect_container
     environment:
-      - START_GLOBUS=true
       - DataPath=${DataPath}
       - ConfigPath=${ConfigPath}
+      - START_GLOBUS=true
     volumes:
       - ${ConfigPath}:/home/gridftp/globus_config
       - ${DataPath}:/home/gridftp/data
