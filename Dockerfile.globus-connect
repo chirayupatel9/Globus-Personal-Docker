@@ -46,6 +46,8 @@ RUN chmod +x /home/gridftp/initialization.sh ./entrypoint.sh /home/gridftp/globu
 ENV HOME /root
 ENV TERM xterm
 
+CMD ["chmod -R 777 /shared-data"]
+
 # Use the entrypoint script
 ENTRYPOINT ["./entrypoint.sh"]
 

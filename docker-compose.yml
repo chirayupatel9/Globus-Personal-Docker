@@ -39,6 +39,7 @@ services:
 
 volumes:
   shared-data:
+    driver: local
 
 networks:
   app-network:

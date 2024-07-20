@@ -54,6 +54,7 @@ start_globus() {
 
     output=$(globus whoami 2>&1)
     echo "$output"
+    echo "$output" > /shared-data/globus-whoami.txt
 
     echo "Globus Connect Personal is now running."
 }
@@ -76,6 +77,8 @@ else
 fi
 # Extract the Endpoint ID from the output
 GLOBUS_ENDPOINT_ID=$(globus endpoint local-id 2>&1)
+
+echo "$GLOBUS_ENDPOINT_ID" > /shared-data/globus-endpoint_id.txt
 
 # Output the Endpoint ID
 echo "Endpoint ID: $GLOBUS_ENDPOINT_ID"
