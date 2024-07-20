@@ -1,5 +1,12 @@
-FROM python:3.8-slim
+FROM python:3.11-slim
+
+RUN apt-get update && apt-get install -y curl
 
 WORKDIR /app
 
+COPY hello_world.py .
+
 RUN echo "Hello, World!"
+
+# Start an interactive shell
+CMD [ "python" ]

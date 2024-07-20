@@ -13,6 +13,7 @@ services:
     volumes:
       - ${ConfigPath}:/home/gridftp/globus_config
       - ${DataPath}:/home/gridftp/data
+      - shared-data:/shared-data
     networks:
       - app-network
     ports:
@@ -28,9 +29,16 @@ services:
     container_name: python_fetch_container
     environment:
       - ENDPOINT_URL=http://globus_connect_container:7512/endpoint
+    volumes:
+      - shared-data:/shared-data
     networks:
       - app-network
+    tty: true
+    stdin_open: true
     restart: unless-stopped
+
+volumes:
+  shared-data:
 
 networks:
   app-network:
