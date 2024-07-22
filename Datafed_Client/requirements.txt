@@ -1,0 +1,6 @@
+datafed
+protobuf==3.20.0
+jupyter
+matplotlib
+numpy
+PyQt6
