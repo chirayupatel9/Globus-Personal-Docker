@@ -1,28 +1,53 @@
-FROM ubuntu:noble
+# FROM ubuntu:noble
 
-RUN apt-get update && apt-get install -y x11-apps
-
-
-CMD ["xeyes"]
+# RUN apt-get update && apt-get install -y x11-apps
 
 
-# # Use the official Miniconda image from the Docker Hub
-# FROM continuumio/miniconda3
+# CMD ["xeyes"]
 
-# WORKDIR /app
 
-# COPY ./Datafed_Client/. .
 
-# # Create and activate conda environment
-# RUN conda create -n datafed python=3.11 -y \
-#     && echo "source activate datafed" > ~/.bashrc
-# ENV PATH /opt/conda/envs/datafed/bin:$PATH
 
-# # Install the dependencies
-# RUN pip install --no-cache-dir -r requirements.txt
+# Use a base image with the required glibc version
+FROM ubuntu:jammy
 
-# # Command to run the application
-# CMD ["python", "main.py"]
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install necessary dependencies
+RUN apt-get update && apt-get install -y \
+    wget \
+    build-essential \
+    libgl1 \
+    libgl1-mesa-glx
+
+# This fix: libGL error: No matching fbConfigs or visuals found
+ENV LIBGL_ALWAYS_INDIRECT=1
+
+# Install Miniconda
+RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O /tmp/miniconda.sh && \
+    bash /tmp/miniconda.sh -b -p /opt/conda && \
+    rm /tmp/miniconda.sh
+
+# Add conda to PATH
+ENV PATH=/opt/conda/bin:$PATH
+
+# Set the working directory
+WORKDIR /app
+
+# Copy the Datafed_Client directory contents to the container
+COPY ./Datafed_Client/. .
+
+# Create and activate the conda environment
+RUN conda create -n datafed python=3.11 pyqt -y \
+    && echo "source activate datafed" > ~/.bashrc
+ENV PATH /opt/conda/envs/datafed/bin:$PATH
+
+# Install the dependencies from requirements.txt
+RUN /opt/conda/envs/datafed/bin/pip install --no-cache-dir -r requirements.txt
+
+# Command to run the application
+CMD ["python", "main.py"]
+
 
 
 # FROM ubuntu:noble
