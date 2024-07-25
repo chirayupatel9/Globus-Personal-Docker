@@ -5,9 +5,6 @@
 
 # CMD ["xeyes"]
 
-
-
-
 # Use a base image with the required glibc version
 FROM ubuntu:jammy
 
@@ -44,6 +41,22 @@ ENV PATH /opt/conda/envs/datafed/bin:$PATH
 
 # Install the dependencies from requirements.txt
 RUN /opt/conda/envs/datafed/bin/pip install --no-cache-dir -r requirements.txt
+
+# Create a user with a home directory
+RUN useradd -ms /bin/bash datafed-user
+
+# Set the user to `newuser`
+USER datafed-user
+
+RUN datafed setup
+
+# Read the content of the file and set it to an environment variable
+RUN export endpoint_id=$(cat /shared-data/globus-endpoint_id.txt)
+
+# Set the environment variable for the user session
+ENV endpoint_id=${endpoint_id}
+
+RUN datafed ep default set $endpoint_id
 
 # Command to run the application
 # CMD ["python", "main.py"]
