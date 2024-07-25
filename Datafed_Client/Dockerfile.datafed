@@ -46,8 +46,11 @@ ENV PATH /opt/conda/envs/datafed/bin:$PATH
 RUN /opt/conda/envs/datafed/bin/pip install --no-cache-dir -r requirements.txt
 
 # Command to run the application
-CMD ["python", "main.py"]
+# CMD ["python", "main.py"]
+# ENTRYPOINT [ "/bin/bash" ]
 
+# Command to keep the container running
+CMD ["tail", "-f", "/dev/null"]
 
 
 # FROM ubuntu:noble
