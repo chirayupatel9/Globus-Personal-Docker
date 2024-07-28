@@ -12,8 +12,8 @@ services:
       - START_GLOBUS=true
     volumes:
       - "${ConfigPath}:/home/gridftp/globus_config" # Map host config path to container
-      - "${DataPath}:/home/gridftp/data" # Map host data path to container
       - shared-data:/shared-data # Shared volume between services
+      - globus-data:/home/gridftp/data # Second shared volume specifically for /home/gridftp/data
     networks:
       - app-network
     ports:
@@ -32,6 +32,7 @@ services:
       - XAUTHORITY=/root/.Xauthority
     volumes:
       - shared-data:/shared-data # Shared volume between services
+      - globus-data:/home/gridftp/data # Second shared volume specifically for /home/gridftp/data
       - /tmp/.X11-unix:/tmp/.X11-unix # Necessary for X11 forwarding
       - "${HOME}/.Xauthority:/root/.Xauthority:rw" # Ensure .Xauthority is present in the host home directory
     network_mode: "host" # Using host network mode for direct network access
@@ -42,6 +43,12 @@ services:
 volumes:
   shared-data:
     driver: local # Using local volume driver for shared-data
+  globus-data:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${DataPath}
+      o: bind
 
 networks:
   app-network:

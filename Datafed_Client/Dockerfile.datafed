@@ -43,10 +43,10 @@ ENV PATH /opt/conda/envs/datafed/bin:$PATH
 RUN /opt/conda/envs/datafed/bin/pip install --no-cache-dir -r requirements.txt
 
 # Create a user with a home directory
-RUN useradd -ms /bin/bash datafed-user
+RUN useradd -ms /bin/bash gridftp
 
 # Set the user to `newuser`
-USER datafed-user
+USER gridftp
 
 RUN datafed setup
 
