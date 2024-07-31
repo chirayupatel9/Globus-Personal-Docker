@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: datafed-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: datafed
+  template:
+    metadata:
+      labels:
+        app: datafed
+    spec:
+      containers:
+      - name: datafed-container
+        image: your_datafed_image # replace with actual image name
+        env:
+        - name: DISPLAY
+          value: "${DISPLAY}" # Replace with actual value
+        - name: XAUTHORITY
+          value: "/root/.Xauthority"
+        volumeMounts:
+        - name: shared-data
+          mountPath: /shared-data
+        - name: globus-data
+          mountPath: /home/gridftp/data
+        - name: x11-unix
+          mountPath: /tmp/.X11-unix
+        - name: xauthority
+          mountPath: /root/.Xauthority
+      volumes:
+      - name: shared-data
+        persistentVolumeClaim:
+          claimName: shared-data-pvc
+      - name: globus-data
+        persistentVolumeClaim:
+          claimName: globus-data-pvc
+      - name: x11-unix
+        hostPath:
+          path: /tmp/.X11-unix
+      - name: xauthority
+        hostPath:
+          path: /root/.Xauthority

@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: globus-connect-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: globus-connect
+  template:
+    metadata:
+      labels:
+        app: globus-connect
+    spec:
+      containers:
+      - name: globus-connect-container
+        image: your_globus_connect_image # replace with actual image name
+        env:
+        - name: DataPath
+          value: "/home/gridftp/data" # Use ConfigMap or Secret for sensitive data
+        - name: ConfigPath
+          value: "/home/gridftp/globus_config" # Use ConfigMap or Secret for sensitive data
+        - name: START_GLOBUS
+          value: "true"
+        ports:
+        - containerPort: 2811
+        - containerPort: 7512
+        - containerPort: 7513
+        volumeMounts:
+        - name: config-volume
+          mountPath: /home/gridftp/globus_config
+        - name: shared-data
+          mountPath: /shared-data
+        - name: globus-data
+          mountPath: /home/gridftp/data
+      volumes:
+      - name: config-volume
+        hostPath:
+          path: "/path/to/your/config" # Replace with actual path
+      - name: shared-data
+        persistentVolumeClaim:
+          claimName: shared-data-pvc
+      - name: globus-data
+        persistentVolumeClaim:
+          claimName: globus-data-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: globus-connect-service
+spec:
+  selector:
+    app: globus-connect
+  ports:
+    - protocol: TCP
+      port: 2811
+      targetPort: 2811
+    - protocol: TCP
+      port: 7512
+      targetPort: 7512
+    - protocol: TCP
+      port: 7513
+      targetPort: 7513
