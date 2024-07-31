@@ -67,7 +67,7 @@ else
     # Check /data/globus-save for GCP endpoint config
     if [ -d "/home/gridftp/globus_config/$gcpconfigdir" ]; then
         # Copy existing config and then start GCP endpoint
-        cp -p -r /home/gridftp/globus_config/.glob* ~
+        cp -p -r --no-preserve=timestamps /home/gridftp/globus_config/.glob* ~
         start_globus
     else
         # Can't find GCP config, sleep for an hour to let user set up config

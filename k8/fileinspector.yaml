@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: temp-pod
+spec:
+  containers:
+  - name: temp-container
+    image: busybox
+    command: [ "sleep", "3600" ] # Keeps the pod running for 1 hour
+    resources:
+      limits:
+        cpu: "500m"
+        memory: "256Mi"
+    volumeMounts:
+    - name: pvc-to-inspect
+      mountPath: /mnt
+  volumes:
+  - name: pvc-to-inspect
+    persistentVolumeClaim:
+      claimName: globus-config-pvc # Replace with your PVC name
+  restartPolicy: Never

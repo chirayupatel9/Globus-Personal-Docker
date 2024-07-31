@@ -3,6 +3,7 @@
 # Set permissions for shared-data
 mkdir -p /shared-data
 chmod -R 777 /shared-data
+chmod -R 777 /home/gridftp
 
 if [ "$START_GLOBUS" = "true" ]; then
     echo "Starting Globus Connect Personal"

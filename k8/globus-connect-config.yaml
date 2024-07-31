@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: globus-connect-deployment
+  name: globus-connect-configure
 spec:
   replicas: 1
   selector:
@@ -15,13 +15,14 @@ spec:
       containers:
       - name: globus-connect-container
         image: jagar2/globuspersonaldocker:latest
+        imagePullPolicy: Always
         env:
         - name: DataPath
           value: "/home/gridftp/data" 
         - name: ConfigPath
           value: "/home/gridftp/globus_config" # Use ConfigMap or Secret for sensitive data
         - name: START_GLOBUS
-          value: "true"
+          value: "false"
         resources:
           limits:
             cpu: "4"
@@ -46,21 +47,3 @@ spec:
       - name: globus-data
         persistentVolumeClaim:
           claimName: globus-data-pvc
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: globus-connect-service
-spec:
-  selector:
-    app: globus-connect
-  ports:
-    - protocol: TCP
-      port: 2811
-      targetPort: 2811
-    - protocol: TCP
-      port: 7512
-      targetPort: 7512
-    - protocol: TCP
-      port: 7513
-      targetPort: 7513

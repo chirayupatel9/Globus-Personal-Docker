@@ -3,6 +3,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: shared-data-pvc
 spec:
+  storageClassName: rook-cephfs
   accessModes:
     - ReadWriteMany
   resources:
@@ -14,8 +15,22 @@ kind: PersistentVolumeClaim
 metadata:
   name: globus-data-pvc
 spec:
+  storageClassName: rook-cephfs
   accessModes:
     - ReadWriteMany
   resources:
     requests:
       storage: 100Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: globus-config-pvc
+spec:
+  storageClassName: rook-cephfs
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 100Mi
+
