@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: datafed-container
-        image: your_datafed_image # replace with actual image name
+        image: jagar2/dockerdatafed:latest # replace with actual image name
         env:
         - name: DISPLAY
           value: "${DISPLAY}" # Replace with actual value
@@ -22,20 +22,18 @@ spec:
           value: "/root/.Xauthority"
         resources:
           limits:
-            cpu: "1"
-            memory: "1Gi"
+            cpu: "8"
+            memory: "10Gi"
           requests:
-            cpu: "100m"
-            memory: "256Mi"
+            cpu: "4"
+            memory: "5Gi"
         volumeMounts:
         - name: shared-data
           mountPath: /shared-data
         - name: globus-data
           mountPath: /home/gridftp/data
-        - name: x11-unix
-          mountPath: /tmp/.X11-unix
-        - name: xauthority
-          mountPath: /root/.Xauthority
+        - name: config-volume
+          mountPath: /home/gridftp/globus_config
       volumes:
       - name: shared-data
         persistentVolumeClaim:
@@ -43,9 +41,6 @@ spec:
       - name: globus-data
         persistentVolumeClaim:
           claimName: globus-data-pvc
-      - name: x11-unix
-        hostPath:
-          path: /tmp/.X11-unix
-      - name: xauthority
-        hostPath:
-          path: /root/.Xauthority
+      - name: config-volume
+        persistentVolumeClaim:
+          claimName: globus-config-pvc
