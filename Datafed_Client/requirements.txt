@@ -3,4 +3,4 @@ protobuf
 jupyter
 matplotlib
 numpy
-PyQt6
+PyQt5

@@ -21,7 +21,7 @@ docker run -e DataPath=$DataPath \
            -e ConfigPath=$ConfigPath \
            -v "$ConfigPath":/home/gridftp/globus_config \
            -v "$DataPath":/home/gridftp/data \
-           -it globus
+           -it jagar2/globuspersonaldocker:latest
 ```
 
 ## Once the Setup is complete the endpoint can be started using the following command:
