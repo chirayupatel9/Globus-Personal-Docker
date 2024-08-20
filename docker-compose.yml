@@ -37,7 +37,8 @@ services:
       - globus-data:/home/gridftp/data # Second shared volume specifically for /home/gridftp/data
       - /tmp/.X11-unix:/tmp/.X11-unix # Necessary for X11 forwarding
       - "${HOME}/.Xauthority:/root/.Xauthority:rw" # Ensure .Xauthority is present in the host home directory
-    network_mode: "host" # Using host network mode for direct network access
+    networks:
+      - app-network # Using host network mode for direct network access
     tty: true # Allocate a pseudo-TTY for the container
     stdin_open: true # Keep STDIN open to interact with the container
     restart: unless-stopped # Automatically restart unless stopped manually
