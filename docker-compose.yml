@@ -30,6 +30,8 @@ services:
     environment:
       - DISPLAY=${DISPLAY} # For GUI applications, ensure DISPLAY is set
       - XAUTHORITY=/root/.Xauthority
+    ports:
+      - "5006:5006"
     volumes:
       - shared-data:/shared-data # Shared volume between services
       - globus-data:/home/gridftp/data # Second shared volume specifically for /home/gridftp/data

@@ -3,4 +3,6 @@ protobuf
 jupyter
 matplotlib
 numpy
-PyQt5
+panel
+param
+flask
