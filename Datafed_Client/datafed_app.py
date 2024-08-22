@@ -3,7 +3,7 @@ import json
 import param
 import panel as pn
 from datafed.CommandLib import API
-from file_selector import FileSelector  # Import the FileSelector
+from file_selector import FileSelector  
 
 pn.extension('material')
 
@@ -65,11 +65,10 @@ class DataFedApp(param.Parameterized):
         self.logout_button.on_click(self.logout)
 
         self.projects_json_pane = pn.pane.JSON(object=None, name='Projects Output', depth=3, width=600, height=400)
-        self.metadata_json_pane = pn.pane.JSON(object=None, name='Metadata', depth=3, width=600, height=400)
+        self.metadata_json_pane = pn.widgets.JSONEditor(object={}, name='Metadata', depth=3, width=600, height=400)
         self.record_output_pane = pn.pane.Markdown("<h3>Status Empty</h3>", name='Status', width=600)
 
-        # Replace FileUploadApp with FileSelector
-        self.file_selector = FileSelector("/")
+        self.file_selector = FileSelector("/home/gridftp/")
         self.file_selector.param.watch(self.update_metadata_from_file_selector, 'value')
 
         self.param.watch(self.update_collections, 'selected_context')

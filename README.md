@@ -15,8 +15,8 @@ docker build -t globus .
 You need to start by running the container and doing the initial configuration. The following command will start the container and mount the necessary volumes:
 
 ```bash
-DataPath=/home/ferroelectric/Globus-Personal-Docker-1/data
-ConfigPath=/home/ferroelectric/Globus-Personal-Docker-1/config
+DataPath=/home/ubuntu/data
+ConfigPath=/home/ubuntu/config
 docker run -e DataPath=$DataPath \
            -e ConfigPath=$ConfigPath \
            -v "$ConfigPath":/home/gridftp/globus_config \
@@ -27,13 +27,12 @@ docker run -e DataPath=$DataPath \
 ## Once the Setup is complete the endpoint can be started using the following command:
 
 ```bash
-DataPath=/home/ferroelectric/Documents/ &&
-ConfigPath=/home/ferroelectric/Globus-Personal-Docker-1/config &&
+DataPath=/home/ubuntu/data/ &&
+ConfigPath=/home/ubuntu/config &&
 docker run -e DataPath="$DataPath"  \
            -e ConfigPath="$ConfigPath" \
            -e START_GLOBUS="true" \
            -v "$ConfigPath":/home/gridftp/globus_config \
            -v "$DataPath":/home/gridftp/data \
-           -- entrypoint /bin/bash \
-           -it globus
+           -it jagar2/globuspersonaldocker:latest
 ```
