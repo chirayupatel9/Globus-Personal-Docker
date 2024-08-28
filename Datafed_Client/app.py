@@ -9,7 +9,12 @@ def login_logout_button(current_user):
         return app.login_button  # Show login button if not logged in
     else:
         return app.logout_button  # Show logout button if logged in
-
+@pn.depends(app.metadata_json_editor.param.value)
+def update_button_visibility(metadata_json_editor_value):
+    if metadata_json_editor_value:  # If there's content in the editor
+        return app.update_button  # Show the update button
+    else:
+        return pn.pane.Markdown("") 
 # Define the header
 header = pn.Row(
     pn.layout.HSpacer(),
@@ -35,19 +40,16 @@ record_pane = pn.Column(
     pn.Param(app.param.selected_collection, widgets={'selected_collection': pn.widgets.Select}),
     pn.Tabs(
         ("Create Record", pn.Column(
-            pn.Param(app.param.title),
-            pn.Row(app.file_selector, app.metadata_json_pane),
+            pn.Row(pn.Param(app.param.title), app.file_selector, app.metadata_json_editor),  # Updated here
             app.create_button, 
             app.record_output_pane
         )),
-        ("Read Record", pn.Column(pn.Param(app.param.record_id), app.read_button, app.record_output_pane)),
-        ("Update Record", pn.Column(pn.Param(app.param.record_id), pn.Param(app.param.update_metadata, widgets={'update_metadata': pn.widgets.TextAreaInput}), app.update_button, app.record_output_pane)),
-        ("Delete Record", pn.Column(pn.Param(app.param.record_id), app.delete_button, app.record_output_pane)),
-        ("Transfer Data", pn.Column(pn.Param(app.param.source_id), pn.Param(app.param.dest_collection), app.transfer_button, app.record_output_pane)),
-    ),
-    
+        ("Read Record", pn.Column(pn.Param(app.param.record_id), pn.Column(app.read_button,app.update_button,app.delete_button,), app.record_output_pane,app.metadata_json_editor)),
+        
+        )
 )
 
+# conflict commit ("Transfer Data", pn.Column(pn.Param(app.param.source_id), pn.Param(app.param.dest_collection), app.transfer_button, app.record_output_pane)),
 # Dynamically show the login pane or the record management pane based on login status
 @pn.depends(app.param.current_user)
 def main_content(current_user):
@@ -55,6 +57,7 @@ def main_content(current_user):
         return login_pane
     else:
         return record_pane
+
 
 # Use MaterialTemplate for the layout
 template = pn.template.MaterialTemplate(title='DataFed Management')

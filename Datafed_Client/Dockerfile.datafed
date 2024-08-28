@@ -60,7 +60,7 @@ RUN datafed ep default set $endpoint_id
 
 EXPOSE 5006
 
-CMD ["sh", "-c", "panel serve app.py --port 5006 --address 0.0.0.0 ; tail -f /dev/null"]
+CMD ["panel", "serve", "app.py", "--address", "0.0.0.0", "--port", "5006", "--allow-websocket-origin=0.0.0.0:5006"]
 # Command to run the application
 # ENTRYPOINT [ "/bin/bash" ]
 

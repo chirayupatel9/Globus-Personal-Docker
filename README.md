@@ -16,7 +16,7 @@ You need to start by running the container and doing the initial configuration. 
 
 ```bash
 DataPath=/home/ubuntu/data
-ConfigPath=/home/ubuntu/config
+ConfigPath=/home/ubuntu/data/config
 docker run -e DataPath=$DataPath \
            -e ConfigPath=$ConfigPath \
            -v "$ConfigPath":/home/gridftp/globus_config \
@@ -28,7 +28,7 @@ docker run -e DataPath=$DataPath \
 
 ```bash
 DataPath=/home/ubuntu/data/ &&
-ConfigPath=/home/ubuntu/config &&
+ConfigPath=/home/ubuntu/data/config &&
 docker run -e DataPath="$DataPath"  \
            -e ConfigPath="$ConfigPath" \
            -e START_GLOBUS="true" \
@@ -36,3 +36,5 @@ docker run -e DataPath="$DataPath"  \
            -v "$DataPath":/home/gridftp/data \
            -it jagar2/globuspersonaldocker:latest
 ```
+<!-- 
+docker run -e DataPath=$DataPath -e ConfigPath=$ConfigPath -v "$ConfigPath":/home/gridftp/ -v "$DataPath":/home/gridftp/data -it jagar2/globuspersonaldocker:latest -->
