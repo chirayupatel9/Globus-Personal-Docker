@@ -5,5 +5,5 @@ matplotlib
 numpy
 panel
 param
-dotenv
+python-dotenv
 flask

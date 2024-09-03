@@ -6,7 +6,6 @@ from datafed.CommandLib import API
 from file_selector import FileSelector
 from google.protobuf.json_format import MessageToJson
 import os
-
 from dotenv import load_dotenv
 
 load_dotenv()

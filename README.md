@@ -15,6 +15,8 @@ docker build -t globus .
 You need to start by running the container and doing the initial configuration. The following command will start the container and mount the necessary volumes:
 
 ```bash
+set $DataPath="D:\\AdobeLightroom\\2023"
+set $ConfigPath="D:\\AdobeLightroom\\2023\\config"
 DataPath=/home/ubuntu/data
 ConfigPath=/home/ubuntu/data/config
 docker run -e DataPath=$DataPath \
@@ -22,6 +24,7 @@ docker run -e DataPath=$DataPath \
            -v "$ConfigPath":/home/gridftp/globus_config \
            -v "$DataPath":/home/gridftp/data \
            -it jagar2/globuspersonaldocker:latest
+docker run -e DataPath=$DataPath -e ConfigPath=$ConfigPath -v "$ConfigPath:/home/gridftp/globus_config" -v "$DataPath:/home/gridftp/data" -it jagar2/globuspersonaldocker:latest
 ```
 
 ## Once the Setup is complete the endpoint can be started using the following command:
