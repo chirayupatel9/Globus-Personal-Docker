@@ -17,14 +17,14 @@ You need to start by running the container and doing the initial configuration. 
 ```bash
 set $DataPath="D:\\AdobeLightroom\\2023"
 set $ConfigPath="D:\\AdobeLightroom\\2023\\config"
-DataPath=/home/ubuntu/data
+DataPath=/home/mnt/d/
 ConfigPath=/home/ubuntu/data/config
 docker run -e DataPath=$DataPath \
            -e ConfigPath=$ConfigPath \
            -v "$ConfigPath":/home/gridftp/globus_config \
            -v "$DataPath":/home/gridftp/data \
            -it jagar2/globuspersonaldocker:latest
-docker run -e DataPath=$DataPath -e ConfigPath=$ConfigPath -v "$ConfigPath:/home/gridftp/globus_config" -v "$DataPath:/home/gridftp/data" -it jagar2/globuspersonaldocker:latest
+docker run -e DataPath="D:\\AdobeLightroom\\2023" -e ConfigPath="D:\\AdobeLightroom\\2023\\config" -v "D:\\AdobeLightroom\\2023\\config":/home/gridftp/globus_config -v "D:\\AdobeLightroom\\2023":/home/gridftp/data -it globus:latest
 ```
 
 ## Once the Setup is complete the endpoint can be started using the following command:

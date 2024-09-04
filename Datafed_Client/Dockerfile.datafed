@@ -58,9 +58,13 @@ ENV endpoint_id=${endpoint_id}
 
 RUN datafed ep default set $endpoint_id
 
+ENV BOKEH_ALLOW_WS_ORIGIN=0.0.0.0:5006
+ENV BOKEH_ALLOW_WS_ORIGIN=localhost:5006
+
+
 EXPOSE 5006
 
-CMD ["panel", "serve", "app.py", "--address", "0.0.0.0", "--port", "5006", "--allow-websocket-origin=0.0.0.0:5006"]
+CMD ["panel", "serve", "app.py", "--address", "0.0.0.0", "--port", "5006", "--allow-websocket-origin=localhost:5006", "--allow-websocket-origin=0.0.0.0:5006"]
 # Command to run the application
 # ENTRYPOINT [ "/bin/bash" ]
 

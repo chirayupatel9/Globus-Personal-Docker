@@ -7,3 +7,5 @@ panel
 param
 python-dotenv
 flask
+pypdf2
+mutagen
