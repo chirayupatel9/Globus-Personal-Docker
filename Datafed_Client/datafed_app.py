@@ -11,6 +11,9 @@ from util import get_file_metadata  # Import the utility function
 
 load_dotenv()
 FILE_PATH = os.getenv("FILE_PATH")
+endpoint_id = os.getenv('endpoint_id')
+print(f"endpoint_id:{endpoint_id}")
+print(f'os.environ:{os.environ}')
 pn.extension('material')
 pn.extension('jsoneditor')
 
@@ -47,6 +50,7 @@ class DataFedApp(param.Parameterized):
     show_login_panel = param.Boolean(default=False)
 
     original_metadata = param.Dict(default={}, label="Original Metadata")  # To track the original metadata
+    metadata_json_editor = pn.widgets.JSONEditor(name='Metadata', mode='text', width=600, editable=True)
 
     def __init__(self, **params):
         params['df_api'] = API() 
@@ -86,7 +90,7 @@ class DataFedApp(param.Parameterized):
         self.param.watch(self.update_collections, 'selected_context')
         self.metadata_json_editor.param.watch(self.on_metadata_change, 'value')
         self.param.watch(self.toggle_update_button_visibility, 'metadata_changed')
-
+        self.endpoint_pane = pn.pane.Markdown("<h3>Endpoint Not Connected</h3>", name='Endpoint_Status', width=600)
         pn.state.onload(self.initial_login_check)
 
     def initial_login_check(self):
@@ -100,6 +104,14 @@ class DataFedApp(param.Parameterized):
                 self.param['selected_context'].objects = self.available_contexts
                 self.selected_context = ids[0] if ids else None
                 self.record_output_pane.object = "<h3>User in session!</h3>"
+                self.find_and_set_endpoint()
+                print(f" endpoint with ID: {endpoint_id}")
+                if endpoint_id:
+                    self.df_api.set_endpoint(endpoint_id)
+                    print(f"Successfully set up the endpoint with ID: {endpoint_id}")
+                else:
+                    print("No endpoint ID found. Please check the environment variable.")
+
             else:
                 self.current_user = "Not Logged In"
                 self.current_context = "No Context"
@@ -127,7 +139,16 @@ class DataFedApp(param.Parameterized):
             self.update_records()
         except Exception as e:
             self.record_output_pane.object = f"<h3>Invalid username or password: {e}</h3>"
-
+    def find_and_set_endpoint(self):
+        try:
+            print(f" endpoint with ID: {endpoint_id}")
+            if endpoint_id:
+                self.df_api.set_endpoint(endpoint_id)
+                print(f"Successfully set up the endpoint with ID: {endpoint_id}")
+            else:
+                print("No endpoint ID found. Please check the environment variable.")
+        except Exception as e:
+            print(f"Error: {e}")
     def logout(self, event):
         self.df_api.logout()
         self.current_user = "Not Logged In"
@@ -135,7 +156,13 @@ class DataFedApp(param.Parameterized):
         self.record_output_pane.object = "<h3>Logged out successfully!</h3>"
         self.username = ""
         self.password = ""
-
+    def set_Endpoint(self, event):
+        try:
+            self.df_api.setEndpoint(self.endpoint)
+            self.record_output_pane.object = "<h3>Endpoint set successfully!</h3>"
+        except Exception as e:
+            self.record_output_pane.object = f"<h3>Error: {e}</h3>"
+            
     def update_collections(self, event):
         context_id = self.selected_context
  
@@ -161,6 +188,7 @@ class DataFedApp(param.Parameterized):
         try:
             selected_file = self.file_selector.value[0] if self.file_selector.value else None
             if selected_file:
+                print(f"Selected file: {self.file_selector.value}")
                 metadata = get_file_metadata(selected_file)  # Get metadata using utility function
                 self.metadata_json_editor.value = metadata if metadata else {}
             else:
@@ -180,10 +208,23 @@ class DataFedApp(param.Parameterized):
             response = self.df_api.dataCreate(
                 title=self.title,
                 metadata=json.dumps(self.metadata_json_editor.value),
+                # metadata_file=self.file_selector.value,
+                #  external= True,
                 parent_id=self.available_collections[self.selected_collection] 
             )
             record_id = response[0].data[0].id
-            self.record_output_pane.object = f"<h3>Success: Record created with ID {record_id}</h3>"
+            try:
+                print(f"file_selector:{self.file_selector.value}")
+                res = self.df_api.dataPut(
+                    data_id=record_id, 
+                    wait = False,
+                    path=self.file_selector.value[0]
+                    )
+                print(f"res:{res}")
+                self.record_output_pane.object = f"<h3>Success: Record created with ID {record_id}:{res}</h3>"
+            except Exception as e:
+                self.record_output_pane.object = f"<h3>Error: Failed to add file to record: {e}</h3>"    
+                
             self.update_records()
         except Exception as e:
             self.record_output_pane.object = f"<h3>Error: Failed to create record: {e}</h3>"
@@ -211,10 +252,29 @@ class DataFedApp(param.Parameterized):
     def on_metadata_change(self, event):
         """Callback to handle changes in the JSON editor."""
         self.metadata_changed = True
-
-    def toggle_update_button_visibility(self, event):
-        """Toggle the visibility of the update button based on metadata changes."""
-        self.update_button.visible = self.metadata_changed
+    def update_metadata_from_file_selector(self, event):
+            try:
+                selected_file = self.file_selector.value[0] if self.file_selector.value else None
+                if selected_file:
+                    print(f"Selected file: {self.file_selector.value}")
+                    metadata = get_file_metadata(selected_file)  # Get metadata using utility function
+                    
+                    # If there is metadata, set the mode to 'tree'
+                    if metadata:
+                        self.metadata_json_editor.mode = 'tree'
+                        self.metadata_json_editor.value = metadata
+                    else:
+                        # If no metadata, set the mode to 'text'
+                        self.metadata_json_editor.mode = 'text'
+                        self.metadata_json_editor.value = {}
+                else:
+                    # If no file is selected, set the mode to 'text' and clear the editor
+                    self.metadata_json_editor.mode = 'text'
+                    self.metadata_json_editor.value = {}
+            except json.JSONDecodeError as e:
+                self.metadata_json_editor.value = {"error": f"Invalid JSON file: {e}"}
+            except Exception as e:
+                self.metadata_json_editor.value = {"error": f"Error processing file: {e}"}
 
     def read_record(self, event):
         if not self.record_id:

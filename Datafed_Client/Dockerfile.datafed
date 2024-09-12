@@ -48,15 +48,21 @@ RUN useradd -ms /bin/bash gridftp
 # Set the user to `newuser`
 USER gridftp
 
-RUN datafed setup
+RUN datafed setup 
 
 # Read the content of the file and set it to an environment variable
 RUN export endpoint_id=$(cat /shared-data/globus-endpoint_id.txt)
 
+RUN echo /shared-data/globus-endpoint_id.txt
 # Set the environment variable for the user session
 ENV endpoint_id=${endpoint_id}
 
-RUN datafed ep default set $endpoint_id
+RUN echo "Endpoint has been set to: $endpoint_id"
+
+RUN datafed ep default set $endpoint_id  && \
+    echo "Endpoint has been set to: $endpoint_id"
+ENV ep_id=${endpoint_id}
+
 
 ENV BOKEH_ALLOW_WS_ORIGIN=0.0.0.0:5006
 ENV BOKEH_ALLOW_WS_ORIGIN=localhost:5006

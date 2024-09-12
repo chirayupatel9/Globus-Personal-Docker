@@ -24,6 +24,8 @@ docker run -e DataPath=$DataPath \
            -v "$ConfigPath":/home/gridftp/globus_config \
            -v "$DataPath":/home/gridftp/data \
            -it jagar2/globuspersonaldocker:latest
+
+           
 docker run -e DataPath="D:\\AdobeLightroom\\2023" -e ConfigPath="D:\\AdobeLightroom\\2023\\config" -v "D:\\AdobeLightroom\\2023\\config":/home/gridftp/globus_config -v "D:\\AdobeLightroom\\2023":/home/gridftp/data -it globus:latest
 ```
 
