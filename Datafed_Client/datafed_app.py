@@ -6,7 +6,7 @@ from datafed.CommandLib import API
 from file_selector import FileSelector
 from google.protobuf.json_format import MessageToJson
 import os
-from dotenv import load_dotenv
+from dotenv import load_dotenv # type: ignore
 from util import get_file_metadata  # Import the utility function
 
 load_dotenv()
@@ -50,7 +50,7 @@ class DataFedApp(param.Parameterized):
     show_login_panel = param.Boolean(default=False)
 
     original_metadata = param.Dict(default={}, label="Original Metadata")  # To track the original metadata
-    metadata_json_editor = pn.widgets.JSONEditor(name='Metadata', mode='text', width=600, editable=True)
+    metadata_json_editor = pn.widgets.JSONEditor(name='Metadata', mode='text', width=600,)
 
     def __init__(self, **params):
         params['df_api'] = API() 
@@ -105,6 +105,9 @@ class DataFedApp(param.Parameterized):
                 self.selected_context = ids[0] if ids else None
                 self.record_output_pane.object = "<h3>User in session!</h3>"
                 self.find_and_set_endpoint()
+                print(f" endpoint : {self.df_api.endpointListRecent()}")
+                print(f" endpoint : {type(self.df_api.endpointListRecent())}")
+                print(f" endpointGet : {self.df_api.endpointGet()}")
                 print(f" endpoint with ID: {endpoint_id}")
                 if endpoint_id:
                     self.df_api.set_endpoint(endpoint_id)
@@ -120,6 +123,9 @@ class DataFedApp(param.Parameterized):
 
     def toggle_login_panel(self, event=None):
         self.show_login_panel = not self.show_login_panel  
+    def toggle_update_button_visibility(self, event):
+        self.update_button.visible = self.metadata_changed
+
 
     def check_login(self, event):
         try:
@@ -136,6 +142,9 @@ class DataFedApp(param.Parameterized):
             self.selected_context = ids[0] if ids else None
             self.record_output_pane.object = "<h3>Login Successful!</h3>"
             self.show_login_panel = False
+            print(f" endpoint : {self.df_api.endpointListRecent()}")
+            print(f" endpointDefaultGet : {type(self.df_api.endpointListRecent())}")
+            print(f" endpointGet : {to_dict(self,self.df_api.endpointListRecent())}")
             self.update_records()
         except Exception as e:
             self.record_output_pane.object = f"<h3>Invalid username or password: {e}</h3>"

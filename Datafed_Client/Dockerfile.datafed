@@ -59,8 +59,8 @@ ENV endpoint_id=${endpoint_id}
 
 RUN echo "Endpoint has been set to: $endpoint_id"
 
-RUN datafed ep default set $endpoint_id  && \
-    echo "Endpoint has been set to: $endpoint_id"
+RUN datafed ep default set $(cat /shared-data/globus-endpoint_id.txt)  && \
+    echo "Endpoint has been set to:"$(cat /shared-data/globus-endpoint_id.txt)
 ENV ep_id=${endpoint_id}
 
 
