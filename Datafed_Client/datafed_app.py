@@ -11,9 +11,14 @@ from util import get_file_metadata  # Import the utility function
 
 load_dotenv()
 FILE_PATH = os.getenv("FILE_PATH")
-endpoint_id = os.getenv('endpoint_id')
-print(f"endpoint_id:{endpoint_id}")
-print(f'os.environ:{os.environ}')
+globus_key = "/shared-data/globus-endpoint_id.txt"
+ep=''
+with open(globus_key, "r") as file:
+    # Read the entire file content
+    content = file.read()
+    print("Endpoint is:",content)
+    ep=content
+print(f'os.environ:{ep}')
 pn.extension('material')
 pn.extension('jsoneditor')
 
@@ -88,6 +93,8 @@ class DataFedApp(param.Parameterized):
         self.file_selector.param.watch(self.update_metadata_from_file_selector, 'value')
 
         self.param.watch(self.update_collections, 'selected_context')
+        self.param.watch(self.update_records, 'selected_collection')
+
         self.metadata_json_editor.param.watch(self.on_metadata_change, 'value')
         self.param.watch(self.toggle_update_button_visibility, 'metadata_changed')
         self.endpoint_pane = pn.pane.Markdown("<h3>Endpoint Not Connected</h3>", name='Endpoint_Status', width=600)
@@ -104,14 +111,9 @@ class DataFedApp(param.Parameterized):
                 self.param['selected_context'].objects = self.available_contexts
                 self.selected_context = ids[0] if ids else None
                 self.record_output_pane.object = "<h3>User in session!</h3>"
-                self.find_and_set_endpoint()
-                print(f" endpoint : {self.df_api.endpointListRecent()}")
-                print(f" endpoint : {type(self.df_api.endpointListRecent())}")
-                print(f" endpointGet : {self.df_api.endpointGet()}")
-                print(f" endpoint with ID: {endpoint_id}")
-                if endpoint_id:
-                    self.df_api.set_endpoint(endpoint_id)
-                    print(f"Successfully set up the endpoint with ID: {endpoint_id}")
+                if ep:
+                    self.df_api.endpointDefaultSet(ep)
+                    print(f"Successfully set up the endpoint with ID: {ep}")
                 else:
                     print("No endpoint ID found. Please check the environment variable.")
 
@@ -142,22 +144,14 @@ class DataFedApp(param.Parameterized):
             self.selected_context = ids[0] if ids else None
             self.record_output_pane.object = "<h3>Login Successful!</h3>"
             self.show_login_panel = False
-            print(f" endpoint : {self.df_api.endpointListRecent()}")
-            print(f" endpointDefaultGet : {type(self.df_api.endpointListRecent())}")
-            print(f" endpointGet : {to_dict(self,self.df_api.endpointListRecent())}")
+            if ep:
+                self.df_api.endpointDefaultSet(ep)
+                print(f"Successfully set up the endpoint with ID: {ep}")
+            else:
+                print("No endpoint ID found. Please check the environment variable.")
             self.update_records()
         except Exception as e:
             self.record_output_pane.object = f"<h3>Invalid username or password: {e}</h3>"
-    def find_and_set_endpoint(self):
-        try:
-            print(f" endpoint with ID: {endpoint_id}")
-            if endpoint_id:
-                self.df_api.set_endpoint(endpoint_id)
-                print(f"Successfully set up the endpoint with ID: {endpoint_id}")
-            else:
-                print("No endpoint ID found. Please check the environment variable.")
-        except Exception as e:
-            print(f"Error: {e}")
     def logout(self, event):
         self.df_api.logout()
         self.current_user = "Not Logged In"
@@ -165,13 +159,7 @@ class DataFedApp(param.Parameterized):
         self.record_output_pane.object = "<h3>Logged out successfully!</h3>"
         self.username = ""
         self.password = ""
-    def set_Endpoint(self, event):
-        try:
-            self.df_api.setEndpoint(self.endpoint)
-            self.record_output_pane.object = "<h3>Endpoint set successfully!</h3>"
-        except Exception as e:
-            self.record_output_pane.object = f"<h3>Error: {e}</h3>"
-            
+                    
     def update_collections(self, event):
         context_id = self.selected_context
  
@@ -186,9 +174,11 @@ class DataFedApp(param.Parameterized):
     def get_collections_in_context(self, context):
         try:
             self.df_api.setContext(context)
+            print(f"selected_collection:{self.selected_collection}")
             items_list = self.df_api.collectionItemsList('root', context=context)
             collections = {item.title: item.id for item in items_list[0].item if item.id.startswith("c/")}
             collections['root'] = 'root'
+            print(f"collections:{collections}")
             return collections
         except Exception as e:
             return [f"Error: {e}"]
@@ -223,7 +213,6 @@ class DataFedApp(param.Parameterized):
             )
             record_id = response[0].data[0].id
             try:
-                print(f"file_selector:{self.file_selector.value}")
                 res = self.df_api.dataPut(
                     data_id=record_id, 
                     wait = False,
@@ -238,16 +227,23 @@ class DataFedApp(param.Parameterized):
         except Exception as e:
             self.record_output_pane.object = f"<h3>Error: Failed to create record: {e}</h3>"
 
-    def update_records(self):
+    def update_records(self,event=None):
         try:
-            if not self.available_collections[self.selected_collection]:
-                self.record_output_pane.object = "<h3>Warning: Context or Collection not selected</h3>"
+            selected_collection = self.available_collections.get(self.selected_collection)
+
+            if not selected_collection:
+                self.record_output_pane.object = "<h3>Warning: No collection selected</h3>"
                 return
-            
-            items_list = self.df_api.collectionItemsList(coll_id=self.available_collections[self.selected_collection], context=self.selected_context)
-            
+
+        # Set the context for the selected collection
+            # if self.selected_context:
+            #     self.df_api.setContext(self.selected_context)
+
+            print(f'self.available_collections[self.selected_collection]:{selected_collection}')
+            print(f'event:{event}')
+            items_list = self.df_api.collectionItemsList(coll_id=selected_collection, context=self.selected_context)
             records = {item.title: item.id for item in items_list[0].item if item.id.startswith("d/")}
-            
+            print(f"records:{records}")
             self.param['record_id'].objects = records
             if records:
                 self.record_id = next(iter(records))

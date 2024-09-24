@@ -51,7 +51,8 @@ USER gridftp
 RUN datafed setup 
 
 # Read the content of the file and set it to an environment variable
-RUN export endpoint_id=$(cat /shared-data/globus-endpoint_id.txt)
+RUN export endpoint_id=$(cat /shared-data/globus-endpoint_id.txt) \
+    && echo $endpoint_id
 
 RUN echo /shared-data/globus-endpoint_id.txt
 # Set the environment variable for the user session
