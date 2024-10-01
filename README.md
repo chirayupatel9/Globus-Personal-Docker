@@ -15,8 +15,8 @@ docker build -t globus .
 You need to start by running the container and doing the initial configuration. The following command will start the container and mount the necessary volumes:
 
 ```bash
-set $DataPath="D:\\AdobeLightroom\\2023"
-set $ConfigPath="D:\\AdobeLightroom\\2023\\config"
+set $DataPath="D:\\Drexel_Classes\\RA\\Globus-Personal-Docker\\data"
+set $ConfigPath="D:\\Drexel_Classes\\RA\\Globus-Personal-Docker\\config"
 DataPath=/home/mnt/d/
 ConfigPath=/home/ubuntu/data/config
 docker run -e DataPath=$DataPath \
@@ -26,7 +26,7 @@ docker run -e DataPath=$DataPath \
            -it jagar2/globuspersonaldocker:latest
 
            
-docker run -e DataPath="D:\\AdobeLightroom\\2023" -e ConfigPath="D:\\AdobeLightroom\\2023\\config" -v "D:\\AdobeLightroom\\2023\\config":/home/gridftp/globus_config -v "D:\\AdobeLightroom\\2023":/home/gridftp/data -it globus:latest
+docker run -e DataPath="D:\\Drexel_Classes\\RA\\Globus-Personal-Docker\\data" -e ConfigPath="D:\\Drexel_Classes\\RA\\Globus-Personal-Docker\\config" -v "D:\\Drexel_Classes\\RA\\Globus-Personal-Docker\\config:/home/gridftp/globus_config" -v "D:\\Drexel_Classes\\RA\\Globus-Personal-Docker\\data:/home/gridftp/data" -it globus:latest
 ```
 
 ## Once the Setup is complete the endpoint can be started using the following command:
@@ -43,3 +43,8 @@ docker run -e DataPath="$DataPath"  \
 ```
 <!-- 
 docker run -e DataPath=$DataPath -e ConfigPath=$ConfigPath -v "$ConfigPath":/home/gridftp/ -v "$DataPath":/home/gridftp/data -it jagar2/globuspersonaldocker:latest -->
+
+```bash
+docker run -e DataPath="D:\\Drexel_Classes\\RA\\Globus-Personal-Docker\\data" -e ConfigPath="D:\\Drexel_Classes\\RA\\Globus-Personal-Docker\\config" -e START_GLOBUS="true" -v "D:\\Drexel_Classes\\RA\\Globus-Personal-Docker\\config:/home/gridftp/globus_config" -v "D:\\Drexel_Classes\\RA\\Globus-Personal-Docker\\data:/home/gridftp/data" -it globus:latest
+
+```
