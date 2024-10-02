@@ -93,7 +93,7 @@ class DataFedApp(param.Parameterized):
         self.file_selector.param.watch(self.update_metadata_from_file_selector, 'value')
 
         self.param.watch(self.update_collections, 'selected_context')
-        self.param.watch(self.update_records, 'selected_collection')
+        self.param.watch(self.update_collections, 'selected_collection')
 
         self.metadata_json_editor.param.watch(self.on_metadata_change, 'value')
         self.param.watch(self.toggle_update_button_visibility, 'metadata_changed')
@@ -162,33 +162,34 @@ class DataFedApp(param.Parameterized):
                     
     def update_collections(self, event):
         context_id = self.selected_context
- 
+
         if context_id:
             collections = self.get_collections_in_context(context_id)
             self.available_collections = collections
-            self.param['selected_collection'].objects = collections
-            if collections:
-                self.selected_collection = next(iter(collections))
+            self.param['selected_collection'].objects = collections  # Update collection options in the Selector
+            if self.selected_collection is None:
+                self.selected_collection = 'root'  # Default to 'root'
             self.update_records()
+
 
     def get_collections_in_context(self, context):
         try:
             self.df_api.setContext(context)
-            print(f"selected_collection:{self.selected_collection}")
             items_list = self.df_api.collectionItemsList('root', context=context)
             collections = {item.title: item.id for item in items_list[0].item if item.id.startswith("c/")}
-            collections['root'] = 'root'
-            print(f"collections:{collections}")
+            collections['root'] = 'root' 
             return collections
         except Exception as e:
-            return [f"Error: {e}"]
+            print(f"Error fetching collections: {e}")
+            return {"Error": str(e)}
+
 
     def update_metadata_from_file_selector(self, event):
         try:
             selected_file = self.file_selector.value[0] if self.file_selector.value else None
             if selected_file:
                 print(f"Selected file: {self.file_selector.value}")
-                metadata = get_file_metadata(selected_file)  # Get metadata using utility function
+                metadata = get_file_metadata(selected_file) 
                 self.metadata_json_editor.value = metadata if metadata else {}
             else:
                 self.metadata_json_editor.value = {}
@@ -230,20 +231,8 @@ class DataFedApp(param.Parameterized):
     def update_records(self,event=None):
         try:
             selected_collection = self.available_collections.get(self.selected_collection)
-
-            if not selected_collection:
-                self.record_output_pane.object = "<h3>Warning: No collection selected</h3>"
-                return
-
-        # Set the context for the selected collection
-            # if self.selected_context:
-            #     self.df_api.setContext(self.selected_context)
-
-            print(f'self.available_collections[self.selected_collection]:{selected_collection}')
-            print(f'event:{event}')
-            items_list = self.df_api.collectionItemsList(coll_id=selected_collection, context=self.selected_context)
+            items_list = self.df_api.collectionItemsList(coll_id=self.selected_collection, context=self.selected_context)
             records = {item.title: item.id for item in items_list[0].item if item.id.startswith("d/")}
-            print(f"records:{records}")
             self.param['record_id'].objects = records
             if records:
                 self.record_id = next(iter(records))
