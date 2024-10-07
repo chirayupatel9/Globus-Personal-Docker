@@ -9,3 +9,8 @@ python-dotenv
 flask
 pypdf2
 mutagen
+igor2
+h5py
+lxml
+hyperspy
+numba
