@@ -54,35 +54,38 @@ class DataFedApp(param.Parameterized):
 
     show_login_panel = param.Boolean(default=False)
 
+    record_alert_message = param.String(default="", label="Record Alert Message")  # For alerts
+
+
     original_metadata = param.Dict(default={}, label="Original Metadata")  # To track the original metadata
     metadata_json_editor = pn.widgets.JSONEditor(name='Metadata', mode='text', width=600,)
 
     def __init__(self, **params):
         params['df_api'] = API() 
         super().__init__(**params)
-        self.login_button = pn.widgets.Button(name='Login', button_type='primary')
+        self.login_button = pn.widgets.Button(name='Login', button_type='primary', css_classes=['bk-btn'])
         self.login_button.on_click(self.toggle_login_panel)
         
-        self.create_button = pn.widgets.Button(name='Create Record', button_type='primary')
+        self.create_button = pn.widgets.Button(name='Create Record', button_type='primary', css_classes=['bk-btn'])
         self.create_button.on_click(self.create_record)
         
-        self.read_button = pn.widgets.Button(name='Read Record', button_type='primary')
+        self.read_button = pn.widgets.Button(name='Read Record', button_type='primary', css_classes=['bk-btn'])
         self.read_button.on_click(self.read_record)
         
-        self.update_button = pn.widgets.Button(name='Update Record', button_type='primary')
+        self.update_button = pn.widgets.Button(name='Update Record', button_type='primary', css_classes=['bk-btn'])
         self.update_button.on_click(self.update_record)
         self.update_button.visible = False  # Initially hidden
         
-        self.delete_button = pn.widgets.Button(name='Delete Record', button_type='danger')
+        self.delete_button = pn.widgets.Button(name='Delete Record', button_type='danger', css_classes=['bk-btn'])
         self.delete_button.on_click(self.delete_record)
         
-        self.transfer_button = pn.widgets.Button(name='Transfer Data', button_type='primary')
+        self.transfer_button = pn.widgets.Button(name='Transfer Data', button_type='primary', css_classes=['bk-btn'])
         self.transfer_button.on_click(self.transfer_data)
         
-        self.projects_button = pn.widgets.Button(name='View Projects', button_type='primary')
+        self.projects_button = pn.widgets.Button(name='View Projects', button_type='primary', css_classes=['bk-btn'])
         self.projects_button.on_click(self.get_projects)
 
-        self.logout_button = pn.widgets.Button(name='Logout', button_type='warning')
+        self.logout_button = pn.widgets.Button(name='Logout', button_type='warning', css_classes=['bk-btn'])
         self.logout_button.on_click(self.logout)
 
         self.projects_json_pane = pn.pane.JSON(object=None, name='Projects Output', depth=3, width=600, height=400)
@@ -94,6 +97,8 @@ class DataFedApp(param.Parameterized):
 
         self.param.watch(self.update_collections, 'selected_context')
         self.param.watch(self.update_collections, 'selected_collection')
+
+        self.record_output_pane.object = ""
 
         self.metadata_json_editor.param.watch(self.on_metadata_change, 'value')
         self.param.watch(self.toggle_update_button_visibility, 'metadata_changed')

@@ -2,6 +2,13 @@ import panel as pn
 from datafed_app import DataFedApp
 
 app = DataFedApp()
+app.login_button.button_type = 'success'
+app.logout_button.button_type = 'danger'
+app.update_button.button_type = 'primary'
+app.login_button.icon = 'sign-in'
+app.logout_button.icon = 'sign-out'
+app.update_button.icon = 'edit'
+
 
 @pn.depends(app.param.current_user)
 def login_logout_button(current_user):
@@ -15,23 +22,35 @@ def update_button_visibility(metadata_json_editor_value):
         return app.update_button  # Show the update button
     else:
         return pn.pane.Markdown("") 
+    
+def on_update_button_click(event):
+    app.update_record()
+    pn.state.notifications.success('Record updated successfully!', duration=2000)
+
+app.update_button.on_click(on_update_button_click)
 # Define the header
 header = pn.Row(
     pn.layout.HSpacer(),
-    pn.pane.Markdown("**User:**"),
+    pn.pane.Markdown("**User:**"    ),
     pn.bind(lambda current_user: pn.pane.Markdown(f"**{current_user}**"), app.param.current_user),
     pn.layout.Spacer(width=20),
     app.logout_button,
     pn.layout.Spacer(width=20),
     pn.layout.HSpacer()
 )
+@pn.depends(app.param.record_alert_message)
+def record_alert(record_alert_message):
+    return pn.Column(
+        pn.pane.Markdown(f"### {record_alert_message}"),
+        pn.widgets.Button(name='Close', button_type='danger', on_click=lambda event: app.clear_alert_message())
+    ) if record_alert_message else None
 
 # Define the login pane
 login_pane = pn.Column(
     pn.Param(app.param.username),
     pn.Param(app.param.password, widgets={'password': pn.widgets.PasswordInput}),
     pn.widgets.Button(name='Submit Login', button_type='primary', on_click=app.check_login),
-    pn.Param(app.param.login_status)
+    pn.Param(app.param.login_status),
 )
 
 # Define the record management pane
@@ -60,11 +79,39 @@ def main_content(current_user):
 
 
 # Use MaterialTemplate for the layout
-template = pn.template.MaterialTemplate(title='DataFed Management')
+# Add this CSS at the beginning of app.py
+pn.config.raw_css.append("""
+body {
+    background-color: white;
+}
+.bk-btn {
+    # position: fixed;
+    z-index: 1000;
+}
+select {
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    padding: 8px;
+    border-radius: 4px;
+    font-size: 14px;
+}
+.bk-btn-primary {
+    background-color: #007bff;
+    color: white;
+}
+.pn-loading-spinner {
+    display: none !important;
+}
+.
+""")
+# Append CSS to make buttons float
 
-# Add content to the template
+# Apply custom CSS to the template
+template = pn.template.BootstrapTemplate(title='DataFed Management', theme='default')
+
 template.header.append(header)
 template.main.append(main_content)  # Append the main content function directly
+template.modal.append(record_alert)
 
 # Conditionally show the login pane as a modal
 template.modal.append(pn.bind(lambda show: login_pane if show else None, app.param.show_login_panel))
