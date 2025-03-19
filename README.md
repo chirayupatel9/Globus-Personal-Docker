@@ -1,4 +1,4 @@
-# Globus Data Application
+# Globus DataFed Application
 
 ## Overview
 This application manages data using Globus configuration and data paths. 
@@ -36,13 +36,22 @@ You can modify these paths according to your system setup:
 
 ## Running the Application
 
-Since I don't have access to the actual application code, I can't provide specific running instructions. I recommend using agent mode to analyze your codebase for detailed running instructions.
+### Globus container
+- Build globus container
+- docker build -t globus_container -f Dockerfile.globus-connect .
+- docker run -it globus_container
+- setup globus with login and endpoint
 
-## Directory Structure
+### Running whole application
+- docker-compose up --build 
+
+## Directory Structure 
+```
 ├── .env # Environment configuration
 ├── globus_data/
 │ ├── config/ # Configuration files
 │ └── data/ # Data files
+```
 
 
 ## Notes
@@ -57,4 +66,3 @@ Since I don't have access to the actual application code, I can't provide specif
 
 ---
 
-For more specific instructions about running the application or additional configuration requirements, please use agent mode to analyze the complete codebase.
