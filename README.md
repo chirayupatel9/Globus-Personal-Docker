@@ -1,50 +1,60 @@
-# Globus-Personal-Docker
+# Globus Data Application
 
-This repository contains a Dockerfile for building a Docker image that can be used to run a personal Globus Connect Server. The image is based on the [globus/globus-connect-server](https://hub.docker.com/r/globus/globus-connect-server) image, and adds a script that can be used to configure the server with a personal endpoint.
+## Overview
+This application manages data using Globus configuration and data paths. 
 
-## Building the container
+## Environment Setup
 
-To build the container, run the following command:
+### Prerequisites
+- Ensure you have the necessary permissions to access the data directories
+- A display server should be available (for GUI applications)
 
-```bash
-docker build -t globus .
+### Environment Configuration
+1. Create a `.env` file in the root directory of the project
+2. Configure the following environment variables:
+
+```env
+# Data Paths
+ConfigPath="E:\globus_data\config"  # Path to configuration directory
+DataPath="E:\globus_data\data"      # Path to data directory
+
+# Display Settings
+DISPLAY=:0                          # Display server configuration
+
+# Additional Paths
+FILE_PATH=/home/                    # Base file path
 ```
 
-## Running the container
+You can modify these paths according to your system setup:
+- For Windows: Use Windows-style paths (e.g., `E:\your\path`)
+- For Linux/Mac: Use Unix-style paths (e.g., `/your/path`)
 
-You need to start by running the container and doing the initial configuration. The following command will start the container and mount the necessary volumes:
+### Customizing Environment Variables
+1. Open the `.env` file in a text editor
+2. Update the paths to match your system's directory structure
+3. Save the file
 
-```bash
-set $DataPath="D:\\Drexel_Classes\\RA\\Globus-Personal-Docker\\data"
-set $ConfigPath="D:\\Drexel_Classes\\RA\\Globus-Personal-Docker\\config"
-DataPath=/home/mnt/d/
-ConfigPath=/home/ubuntu/data/config
-docker run -e DataPath=$DataPath \
-           -e ConfigPath=$ConfigPath \
-           -v "$ConfigPath":/home/gridftp/globus_config \
-           -v "$DataPath":/home/gridftp/data \
-           -it jagar2/globuspersonaldocker:latest
+## Running the Application
 
-           
-docker run -e DataPath="D:\\Drexel_Classes\\RA\\Globus-Personal-Docker\\data" -e ConfigPath="D:\\Drexel_Classes\\RA\\Globus-Personal-Docker\\config" -v "D:\\Drexel_Classes\\RA\\Globus-Personal-Docker\\config:/home/gridftp/globus_config" -v "D:\\Drexel_Classes\\RA\\Globus-Personal-Docker\\data:/home/gridftp/data" -it globus:latest
-```
+Since I don't have access to the actual application code, I can't provide specific running instructions. I recommend using agent mode to analyze your codebase for detailed running instructions.
 
-## Once the Setup is complete the endpoint can be started using the following command:
+## Directory Structure
+├── .env # Environment configuration
+├── globus_data/
+│ ├── config/ # Configuration files
+│ └── data/ # Data files
 
-```bash
-DataPath=/home/ubuntu/data/ &&
-ConfigPath=/home/ubuntu/data/config &&
-docker run -e DataPath="$DataPath"  \
-           -e ConfigPath="$ConfigPath" \
-           -e START_GLOBUS="true" \
-           -v "$ConfigPath":/home/gridftp/globus_config \
-           -v "$DataPath":/home/gridftp/data \
-           -it jagar2/globuspersonaldocker:latest
-```
-<!-- 
-docker run -e DataPath=$DataPath -e ConfigPath=$ConfigPath -v "$ConfigPath":/home/gridftp/ -v "$DataPath":/home/gridftp/data -it jagar2/globuspersonaldocker:latest -->
 
-```bash
-docker run -e DataPath="D:\\Drexel_Classes\\RA\\Globus-Personal-Docker\\data" -e ConfigPath="D:\\Drexel_Classes\\RA\\Globus-Personal-Docker\\config" -e START_GLOBUS="true" -v "D:\\Drexel_Classes\\RA\\Globus-Personal-Docker\\config:/home/gridftp/globus_config" -v "D:\\Drexel_Classes\\RA\\Globus-Personal-Docker\\data:/home/gridftp/data" -it globus:latest
+## Notes
+- Ensure all paths in the `.env` file exist on your system
+- The application requires a display server (`:0` is the default)
+- Make sure you have appropriate read/write permissions for the configured directories
 
-```
+## Troubleshooting
+- If you encounter path-related errors, verify the paths in your `.env` file
+- For display issues, check if your display server is running and accessible
+- Ensure all required directories exist and have proper permissions
+
+---
+
+For more specific instructions about running the application or additional configuration requirements, please use agent mode to analyze the complete codebase.

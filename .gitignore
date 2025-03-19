@@ -2,3 +2,5 @@
 /data/*
 *.conf
 /conf*
+.env
+

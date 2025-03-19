@@ -1,15 +1,3 @@
-#!/bin/env bash
-
-# Summary: This shell script will check for a Globus Connect Personal (GCP) 
-# endpoint & start it if it exists, otherwise it will sleep for an hour giving 
-# the user time to login and configure the GCP endpoint.
-
-# Note: This script assumes that the user follows the directions in the README.
-
-# Author: Kyle Krick <kkrick@sdsu.edu>
-
-###  Variables  ###
-
 echo "Running Globus Connect Personal script"
 
 # GCP config is stored in the .globusonline directory
@@ -18,7 +6,6 @@ gcpconfigdir=".globusonline"
 gcpdir=$(find . -maxdepth 1 -type d -name "globusconnectpersonal-*" -print -quit)
 
 ###  Script Start  ###
-
 cd /home/gridftp || exit 1
 
 # Check to make sure globusconnectpersonal exists
