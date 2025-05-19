@@ -39,7 +39,8 @@ You can modify these paths according to your system setup:
 ### Globus container
 - Build globus container
 - docker build -t globus_container -f Dockerfile.globus-connect .
-- docker run -it globus_container
+- docker run -e DataPath="E:/globus_data/data" -e ConfigPath="E:/globus_data/config" -v "E:/globus_data/config:/home/gridftp/globus_config" -v "E:/globus_data/data:/home/gridftp/data" -it globus_container
+- docker run -e DataPath="E:/globus_data/data" -e ConfigPath="E:/globus_data/config" -v "E:/globus_data/config:/home/gridftp/globus_config" -v "E:/globus_data/data:/home/gridftp/data" -e START_GLOBUS="true" -it globus_container 
 - setup globus with login and endpoint
 
 ### Running whole application
@@ -52,7 +53,6 @@ You can modify these paths according to your system setup:
 │ ├── config/ # Configuration files
 │ └── data/ # Data files
 ```
-
 
 ## Notes
 - Ensure all paths in the `.env` file exist on your system

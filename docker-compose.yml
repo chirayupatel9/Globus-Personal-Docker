@@ -1,4 +1,4 @@
-version: "3.3"
+version: "3.8"
 
 services:
   globus-connect:
@@ -47,6 +47,7 @@ volumes:
   shared-data:
     driver: local # Using local volume driver for shared-data
   globus-data:
+    external: true
     driver: local
     driver_opts:
       type: none
