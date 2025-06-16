@@ -1,4 +1,4 @@
-version: "3.8"
+version: "3.3"
 
 services:
   globus-connect:
@@ -37,8 +37,8 @@ services:
       - globus-data:/home/gridftp/data # Second shared volume specifically for /home/gridftp/data
       - /tmp/.X11-unix:/tmp/.X11-unix # Necessary for X11 forwarding
       - "${HOME}/.Xauthority:/root/.Xauthority:rw" # Ensure .Xauthority is present in the host home directory
-    networks:
-      - app-network # Using host network mode for direct network access
+    network_mode: "host" # Using host network mode for direct network access
+
     tty: true # Allocate a pseudo-TTY for the container
     stdin_open: true # Keep STDIN open to interact with the container
     restart: unless-stopped # Automatically restart unless stopped manually
@@ -47,7 +47,6 @@ volumes:
   shared-data:
     driver: local # Using local volume driver for shared-data
   globus-data:
-    external: true
     driver: local
     driver_opts:
       type: none
