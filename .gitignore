@@ -4,3 +4,5 @@
 /conf*
 .env
 *.env
+*.venv/*
+*.venv
